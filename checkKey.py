@@ -1,4 +1,5 @@
 #$1 - .WAV file
+#Example program call: python3 ./checkKey.py nameOfFile.wav
 
 import scipy.fftpack
 import sys
