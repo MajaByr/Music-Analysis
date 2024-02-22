@@ -1,6 +1,5 @@
 #$1 - .WAV file
 
-from scipy.interpolate import interp1d
 import scipy.fftpack
 import sys
 import numpy as np
@@ -37,45 +36,23 @@ def printScale(code):
         case -4: print("Ab Major/F Minor"); return;
         case -5: print("Db Major/Bb Minor"); return;
 
-
 data, Fs = sf.read(sys.argv[1], dtype='float32')
-
-#print(data.dtype)
-#print(data.shape)
-
-#sd.play(data,fs)
-#status=sd.wait()
-
 N=len(data) #number of samples
 t = np.arange(N)/Fs     # time array
 
-#plt.subplot(2,1,1) #pierwszy kanał
-#plt.plot(t, data[:,0]) 
-#plt.subplot(2,1,2) #drugi kanał
-#plt.plot(t, data[:,1]) 
-
 f=np.linspace(-Fs/2, Fs/2, len(t))
+step=len(t)/Fs
 XT=np.fft.fftshift(np.fft.fft(data[:,0]))
 WA=abs(XT)
 
-#plt.figure()
-plt.subplot(2,1,1)
+plt.subplot(2,1,1) #x(t) plot
 plt.plot(t, data[:,0])
-data_interp = interp1d(t, data[:,0])
-plt.plot(t, data_interp)
-
-
-plt.subplot(2,1,2)
+plt.subplot(2,1,2) #WA(f) plot
 plt.plot(f, WA)
-
-step=len(t)/Fs
-#WA[int(831*Fs/len(t))])
 
 printScale(checkScale(WA))
 
-#plt.subplot(2,1,1)
-#plt.plot(data[:,0])
-sd.play(data, Fs)
+#sd.play(data, Fs) #uncomment this line if program should play music from .WAV file
 plt.show()
-status=sd.wait()
+#status=sd.wait() #uncomment this line if program should play music from .WAV file
 exit()
