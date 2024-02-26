@@ -92,5 +92,7 @@ def checkScale():
 
 checkScale();
 
+#sd.play(data, Fs) #uncomment this line if program should play music from .WAV file
 plt.show()
+#status=sd.wait() #uncomment this line if program should play music from .WAV file
 exit()
