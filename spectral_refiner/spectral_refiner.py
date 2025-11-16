@@ -71,9 +71,6 @@ class SpectralRefiner:
         
         max_ix = len(fft)//2
 
-        freqs = np.linspace(0, sampling_rate/2, max_ix, endpoint=False)
-        dominant_frequencies = freqs[dominant_frequencies_ixs]
-
         fft_filtered = fft[:max_ix].copy()
 
         hz_per_bin = sampling_rate / max_ix
@@ -85,7 +82,7 @@ class SpectralRefiner:
             fft_filtered[start:end] = 0
             fft_filtered[idx] = fft[idx]
 
-        return fft_filtered
+        return np.concatenate((fft_filtered, fft_filtered[::-1]))
 
     def fft_to_wav(fft: np.array, wav_path: str, sampling_rate: int):
         """
