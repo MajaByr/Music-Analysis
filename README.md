@@ -28,7 +28,7 @@ Refine spectrum of given audio segment, choosing one of available methods:
 * Retain only the harmonics that are local maxima within a 30 Hz frequency window.
 
 ```
-in progress...
+python3 spectral_refiner/spectral_refiner.py
 ```
 
 ---
