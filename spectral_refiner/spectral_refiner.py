@@ -5,25 +5,30 @@ from scipy.fft import fft, ifft, fftshift
 import matplotlib.pyplot as plt
 
 
-def plot_fft(fft) -> None:
-    # plt.plot(xs, fft)
-    max = int(len(fft)/2)
-    xs = range(1,max)
-    plt.semilogy(xs, fft[1:max])
-    plt.grid()
-    plt.show()
+class SpectralRefiner:
+    def plot_fft(fft: np.array) -> None:
+        """
+        Plot amplitude spectrum of given fft.
+        """
+        max_ix = int(len(fft)/2)
+        ixs = range(1,max_ix)
+        plt.semilogy(ixs, fft[1:max_ix])
+        plt.grid()
+        plt.show()
 
-def get_conversion_factor(fft, sr) -> int:
-    max = int(len(fft)/2)
-    return 1/max * sr/2
+    def get_conversion_factor(fft, sr) -> int:
+        max = int(len(fft)/2)
+        return 1/max * sr/2
 
-# Konwersja indeksu próbki (piku na hz)
-def ix_to_hz(sample_ix, factor) -> int:
-    return sample_ix * factor
+    def ix_to_hz(sample_ix, conversion_factor) -> int:
+        """
+        Convert an FFT bin index to its corresponding frequency in Hertz.
+        """
+        return sample_ix * conversion_factor
 
 if __name__=="__main__":
-    dir_path = "/home/maja/Studia/Akustyka/AkustykaMuzyczna/Lab_3/AMlab3/"
-    wav_path = dir_path + 'skrzypce.wav'
+    dir_path = "spectral_refiner/audio_samples/"
+    wav_path = dir_path + 'violin_raw.wav'
 
     # Load wav file
     y, sr = librosa.load(wav_path, sr=None)
@@ -31,11 +36,8 @@ if __name__=="__main__":
     # Calculate FFT
     fft = fft(y)
 
-    plot_fft(fft)
+    SpectralRefiner.plot_fft(fft)
 
-    factor = get_conversion_factor(fft, sr)
-    ix_converted = ix_to_hz(260)
-
-    
-
-    print("stop")
+    conversion_factor = SpectralRefiner.get_conversion_factor(fft, sr)
+    ix_converted = SpectralRefiner.ix_to_hz(260, conversion_factor)
+    print(ix_converted)
