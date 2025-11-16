@@ -84,6 +84,20 @@ class SpectralRefiner:
 
         return np.concatenate((fft_filtered, fft_filtered[::-1]))
 
+    def retaining_filter(fft, dominant_frequencies_ixs, dom_freq_amplitudes):
+        
+        fft_filtered = np.zeros(len(fft), dtype=complex)
+
+        for idx, amp in zip(dominant_frequencies_ixs, dom_freq_amplitudes):
+            fft_filtered[idx] = amp
+
+        for idx, amp in zip(dominant_frequencies_ixs, dom_freq_amplitudes):
+            if idx != 0:
+                mirror = len(fft) - idx
+                fft_filtered[mirror] = np.conj(amp)
+
+        return fft_filtered
+
     def fft_to_wav(fft: np.array, wav_path: str, sampling_rate: int):
         """
         Save waveform to 16-bit PCM
@@ -111,7 +125,10 @@ class SpectralRefiner:
         dominant_frequencies_ixs, dom_freq_amplitudes = SpectralRefiner.get_dominant_frequencies_ixs(fft, 35)
 
         # Filter out all harmonics lying within ±15 Hz of the detected spectral peaks
-        filtered_fft = SpectralRefiner.filter_fft(fft, sr, dominant_frequencies_ixs, dom_freq_amplitudes, 15)
+        # filtered_fft = SpectralRefiner.filter_fft(fft, sr, dominant_frequencies_ixs, dom_freq_amplitudes, 15)
+
+        # Retaining filter
+        filtered_fft = SpectralRefiner.retaining_filter(fft, dominant_frequencies_ixs, dom_freq_amplitudes)
 
         # Save filtered file to .wav
         SpectralRefiner.fft_to_wav(filtered_fft, output_path, sr)
@@ -126,4 +143,4 @@ if __name__=="__main__":
 
     # Analyze violin triad
     triad_wav_path = dir_path + 'violin_triad.wav'
-    SpectralRefiner.analyze_file(triad_wav_path, 'spectral_refiner/output/violin_triad_filtered.wav', 24)
+    SpectralRefiner.analyze_file(triad_wav_path, 'spectral_refiner/output/violin_triad_filtered_v3.wav', 24)
